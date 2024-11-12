@@ -24,7 +24,7 @@ pool.connect((err, client, release) => {
     if (err) {
         console.error('Error connecting to the database', err.stack);
     } else {
-        console.log('Connected to the AWS RDS PostgreSQL database');
+        console.log('Connected to the AWS RDS PostgreSQL mtdb database');
     }
     release(); // Release the client back to the pool
 });
