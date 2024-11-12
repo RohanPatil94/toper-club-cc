@@ -1,8 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg'); // PostgreSQL client
-const cors = require('cors'); // Import cors
-require('dotenv').config();
+const cors = require('cors'); 
 
 const app = express();
 app.use(express.json());
@@ -13,9 +12,9 @@ app.use(cors());
 // Setup PostgreSQL client
 const pool = new Pool({
     user: "postgres",
-    host: "mydb.cz0q6mq0u61d.us-east-1.rds.amazonaws.com",
+    host: "mtdb.cn4wqu022xnm.ap-south-1.rds.amazonaws.com",
     database: "mydb",
-    password: "manoj123",
+    password: "rohan123",
     port: 5432,
     ssl: { rejectUnauthorized: false }, 
 });
@@ -29,6 +28,25 @@ pool.connect((err, client, release) => {
     }
     release(); // Release the client back to the pool
 });
+
+// Serve the index.html file on the root route
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+// Fetch all users route
+app.get('/users', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT name, email FROM users');
+        res.status(200).json({ users: result.rows });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+});
+
 
 // Signup route
 app.post('/signup', async (req, res) => {
@@ -99,8 +117,9 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
 // Start the server
-const PORT = 8080;
+const PORT = 8000;  
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
